@@ -5,6 +5,7 @@ import { Input, IconSearch, Typography } from '@supabase/ui'
 
 import { useStore } from 'hooks'
 import ExtensionCard from './ExtensionCard'
+import { HIDDEN_EXTENSIONS } from './Extensions.constants'
 
 interface Props {}
 
@@ -13,9 +14,10 @@ const Extensions: FC<Props> = ({}) => {
   const [filterString, setFilterString] = useState<string>('')
 
   const extensions =
-    filterString.length === 0
+    (filterString.length === 0
       ? meta.extensions.list()
-      : meta.extensions.list((ext: any) => ext.name.includes(filterString))
+      : meta.extensions.list((ext: any) => ext.name.includes(filterString)))
+      .filter((ext: any) => !HIDDEN_EXTENSIONS.includes(ext.name))
   const [enabledExtensions, disabledExtensions] = partition(
     extensions,
     (ext: any) => !isNull(ext.installed_version)
